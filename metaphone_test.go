@@ -3,11 +3,14 @@ package megophone
 import "testing"
 
 func Test(t *testing.T) {
-	Metaphone("michael")
-	Metaphone("mchugh")
-	Metaphone("chianti")
-	Metaphone("caesar")
-	Metaphone("czerny")
-	Metaphone("bach")
+	Metaphone("Michael")
+	Metaphone("McHugh")
+	Metaphone("Chianti")
+	Metaphone("Caesar")
+	Metaphone("Czerny")
+	Metaphone("Bach")
 	Metaphone("focaccia")
+	Metaphone("accident")
+	Metaphone("bacci")
+	Metaphone("Mac Gregor")
 }

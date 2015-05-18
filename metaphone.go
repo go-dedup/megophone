@@ -41,7 +41,10 @@ translated to Go by Adele Dewey-Lopez <adele@seed.co> using Atkinson's C++ sourc
   Updated 2013-06    - Enforced unicode literals (0.5; Ian Beaver)
 */
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type phoneticData struct {
 	t               string
@@ -102,7 +105,6 @@ func (p *phoneticData) ç() {
 }
 
 func (p *phoneticData) c() {
-
 	if p.cur > 1 && !p.isVowel(-2) && p.matchesAny(-1, "ach") && !p.matchesAny(2, "i") &&
 		(!p.matchesAny(2, "e") || p.matchesAny(-2, "acher")) {
 		// various germanic
@@ -152,6 +154,42 @@ func (p *phoneticData) c() {
 		// e.g. "focaccia"
 		p.add("x")
 		p.skip(2)
+	} else if p.matchesAny(0, "cc") && !(p.cur == 1 && p.matchesAny(-p.cur, "m")) {
+		// double "c", but not if e.g. "McClellan"
+		if p.matchesAny(2, "i", "e", "h") && !p.matchesAny(2, "hu") {
+			// "bellocchio" but not "bacchus"
+			if (p.cur == 1 && p.matchesAny(-1, "a")) || p.matchesAny(-1, "uccee", "ucces") {
+				// "accident" "acceed" or "success"
+				p.add("ks")
+			} else {
+				p.add("x")
+			}
+			p.skip(2)
+		} else {
+			// Pierce's rule
+			p.add("k")
+			p.skip(1)
+		}
+	} else if p.matchesAny(0, "ck", "cg", "cq") {
+		p.add("k")
+		p.skip(1)
+	} else if p.matchesAny(0, "ci", "ce", "cy") {
+		if p.matchesAny(0, "cio", "cie", "cia") {
+			// italian vs. english
+			p.add("s", "x")
+		} else {
+			p.add("s")
+		}
+		p.skip(1)
+	} else {
+		p.add("k")
+	}
+
+	// "mac caffrey", "mac gregor"
+	if p.matchesAny(1, " c", " g", " q") {
+		p.skip(2)
+	} else if p.matchesAny(1, "c", "k", "q") && !p.matchesAny(1, "ce", "ci") {
+		p.skip(1)
 	}
 }
 
@@ -164,6 +202,7 @@ func Metaphone(s string) (string, string) {
 	// pad string
 	// normalize
 	p.t = s + "     "
+	p.t = strings.ToLower(p.t)
 
 	if p.matchesAny(0, "gn", "kn", "pn", "wr", "ps") {
 		p.skip(2)
