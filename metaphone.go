@@ -183,12 +183,144 @@ func (p *phoneticData) c() {
 		p.skip(1)
 	} else {
 		p.add("k")
+		// "mac caffrey", "mac gregor"
+		if p.matchesAny(1, " c", " g", " q") {
+			p.skip(2)
+		} else if p.matchesAny(1, "c", "k", "q") && !p.matchesAny(1, "ce", "ci") {
+			p.skip(1)
+		}
+	}
+}
+
+func (p *phoneticData) d() {
+	if p.matchesAny(0, "dg") {
+		if p.matchesAny(2, "i", "e", "y") {
+			p.add("j")
+			p.skip(2)
+		} else {
+			p.add("tk")
+			p.skip(1)
+		}
+	} else if p.matchesAny(0, "dd", "dt") {
+		p.add("t")
+		p.skip(1)
+	} else {
+		p.add("t")
+	}
+}
+
+func (p *phoneticData) f() {
+	if p.matchesAny(0, "ff") {
+		p.add("f")
+		p.skip(1)
+	} else {
+		p.add("f")
+	}
+}
+
+func (p *phoneticData) g() {
+	if p.matchesAny(1, "h") {
+		if p.cur > 0 && !p.isVowel(-1) {
+			p.add("k")
+			p.skip(1)
+		} else if p.cur == 0 {
+			if p.matchesAny(2, "i") {
+				p.add("j")
+			} else {
+				p.add("k")
+			}
+			p.skip(1)
+		} else if p.matchesAny(-2, "b", "h", "d") ||
+			p.matchesAny(-3, "b", "h", "d") ||
+			p.matchesAny(-4, "b", "h", "d") {
+			// Parker's rule (with further refinements)
+			// e.g., "hugh", "bough", "broughton", "drought"
+			p.skip(1)
+		} else {
+			// e.g., "laugh", "McLaughlin"
+			if p.matchesAny(-1, "u") && p.matchesAny(-3, "c", "g", "l", "r", "t") {
+				p.add("f")
+			} else if !p.matchesAny(-1, "i") {
+				p.add("k")
+			}
+			p.skip(1)
+		}
+	} else if p.matchesAny(1, "n") {
+		if p.cur == 1 && p.isVowel(-p.cur) && !p.isSlavoGermanic {
+			p.add("kn", "n")
+		} else {
+			// not e.g., "cagney"
+			if !p.matchesAny(2, "ey") && !p.matchesAny(1, "y") && !p.isSlavoGermanic {
+				p.add("n", "kn")
+			} else {
+				p.add("kn")
+			}
+		}
+		p.skip(1)
+	} else if p.matchesAny(1, "li") && !p.isSlavoGermanic {
+		// tagliaro
+		p.add("kl", "l")
+		p.skip(1)
+	} else if p.cur == 0 && p.matchesAny(1, "y") ||
+		p.matchesAny(1, "es", "ep", "eb", "el", "ey", "ib", "il", "in", "ie", "ei") {
+		p.add("k", "j")
+		p.skip(1)
+	} else if p.matchesAny(1, "er", "y") &&
+		// -ger- -gy-
+		!p.matchesAny(-3, "danger", "ranger", "manger") &&
+		!p.matchesAny(-1, "e", "i", "rgy", "ogy") {
+		p.add("k", "j")
+		p.skip(1)
+	} else if p.matchesAny(1, "e", "i", "y") || p.matchesAny(-1, "aggi", "oggi") {
+		// italian e.g. "biaggi"
+		if p.matchesAny(-p.cur, "van ", "von ", "sch") || p.matchesAny(1, "et") {
+			// obvious germanic
+			p.add("k")
+		} else if p.matchesAny(1, "ier") {
+			// always soft if french ending
+			p.add("j")
+		} else {
+			p.add("j", "k")
+		}
+		p.skip(1)
+	} else {
+		p.add("k")
+		if p.matchesAny(1, "g") {
+			p.skip(1)
+		}
+	}
+}
+
+func (p *phoneticData) h() {
+	if (p.cur == 0 || p.isVowel(-1)) && p.isVowel(1) {
+		// only keep if first and before vowel, or between two vowels
+		p.add("h")
+		p.skip(1)
+	}
+	// will skip over "hh"
+}
+
+func (p *phoneticData) j() {
+	if p.matchesAny(0, "jose") || p.matchesAny(-p.cur, "san ") {
+		// obvious spanish e.g. "jose" "san jacinto"
+		if p.cur == 0 && p.matchesAny(4, " ") || p.matchesAny(-p.cur, "san ") {
+			p.add("h")
+		} else {
+			p.add("j", "h")
+		}
+	} else if p.cur == 0 {
+		p.add("j", "a")
+	} else if p.isVowel(-1) && !p.isSlavoGermanic && p.matchesAny(1, "A", "O") {
+		p.add("j", "h")
+	} else if p.matchesAny(1, " ") {
+		// end of the word because of padding
+		p.add("j", " ") // ? why the space
+	} else if !p.matchesAny(1, "l", "t", "k", "s", "n", "m", "b", "z") &&
+		!p.matchesAny(-1, "s", "k", "l") {
+		p.add("j")
 	}
 
-	// "mac caffrey", "mac gregor"
-	if p.matchesAny(1, " c", " g", " q") {
-		p.skip(2)
-	} else if p.matchesAny(1, "c", "k", "q") && !p.matchesAny(1, "ce", "ci") {
+	if p.matchesAny(1, "j") {
 		p.skip(1)
 	}
 }
@@ -226,14 +358,16 @@ func Metaphone(s string) (string, string) {
 			p.ç()
 		case 'c':
 			p.c()
-			// case 'd':
-			// 	p.b()
-			// case 'f':
-			// 	p.b()
-			// case 'g':
-			// 	p.b()
-			// case 'h':
-			// 	p.b()
+		case 'd':
+			p.d()
+		case 'f':
+			p.f()
+		case 'g':
+			p.g()
+		case 'h':
+			p.h()
+		case 'j':
+			p.j()
 		}
 		p.cur++
 
