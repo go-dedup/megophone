@@ -61,12 +61,12 @@ type phoneticData struct {
 	metaphone2      string
 }
 
-func (p *phoneticData) endsWith(matches ...string) bool {
-	end := strings.Index(string(p.word[p.cur:]), " ")
-	if end != -1 {
+func (p *phoneticData) beginsWith(matches ...string) bool {
+	start := strings.LastIndex(string(p.word[:p.cur]), " ")
+	if start != -1 {
 		for _, str := range matches {
 
-			if strings.Contains(string(p.word[p.cur:p.cur+end+1]), str+" ") {
+			if strings.Contains(string(p.word[start:p.cur]), " "+str) {
 				return true
 			}
 		}
@@ -74,12 +74,12 @@ func (p *phoneticData) endsWith(matches ...string) bool {
 	return false
 }
 
-func (p *phoneticData) beginsWith(matches ...string) bool {
-	start := strings.LastIndex(string(p.word[:p.cur]), " ")
-	if start != -1 {
+func (p *phoneticData) endsWith(matches ...string) bool {
+	end := strings.Index(string(p.word[p.cur:]), " ")
+	if end != -1 {
 		for _, str := range matches {
 
-			if strings.Contains(string(p.word[start:p.cur]), " "+str) {
+			if strings.Contains(string(p.word[p.cur:p.cur+end+1]), str+" ") {
 				return true
 			}
 		}
@@ -94,7 +94,6 @@ func (p *phoneticData) containsAny(matches ...string) bool {
 			return true
 		}
 	}
-
 	return false
 }
 
@@ -116,7 +115,6 @@ func (p *phoneticData) matchesAny(pos int, matches ...string) bool {
 			}
 		}
 	}
-
 	return false
 }
 
@@ -621,7 +619,6 @@ func (p *phoneticData) z() {
 }
 
 func Metaphone(s string) (string, string) {
-
 	// initialize
 	var p *phoneticData
 	p = &phoneticData{}
