@@ -8,21 +8,25 @@ or name; rather, the output is an intentionally approximate phonetic
 representation. The approximate encoding is necessary to account for the way
 speakers vary their pronunciations and misspell or otherwise vary words and
 names they are trying to spell.
+
 The Double Metaphone phonetic encoding algorithm is the second generation of
 the Metaphone algorithm. Its implementation was described in the June 2000
 issue of C/C++ Users Journal. It makes a number of fundamental design
 improvements over the original Metaphone algorithm.
+
 It is called "Double" because it can return both a primary and a secondary code
 for a string; this accounts for some ambiguous cases as well as for multiple
 variants of surnames with common ancestry. For example, encoding the name
 "Smith" yields a primary code of SM0 and a secondary code of XMT, while the
 name "Schmidt" yields a primary code of XMT and a secondary code of SMT--both
 have XMT in common.
+
 Double Metaphone tries to account for myriad irregularities in English of
 Slavic, Germanic, Celtic, Greek, French, Italian, Spanish, Chinese, and other
 origin. Thus it uses a much more complex ruleset for coding than its
 predecessor; for example, it tests for approximately 100 different contexts of
 the use of the letter C alone.
+
 This script implements the Double Metaphone algorithm (c) 1998, 1999 originally
 implemented by Lawrence Philips in C++. It was further modified in C++ by Kevin
 Atkinson (http {//aspell.net/metaphone/). It was translated to C by Maurice
@@ -31,6 +35,7 @@ created by Andrew Collins on January 12, 2007, using the C source
 (http {//www.atomodo.com/code/double-metaphone/metaphone.py/view). It was also
 translated to Go by Adele Dewey-Lopez <adele@seed.co> using Atkinson's C++ source,
 with some further revisions.
+
   Updated 2007-02-14 - Found a typo in the 'gh' section (0.1.1)
   Updated 2007-12-17 - Bugs fixed in 'S', 'Z', and 'J' sections (0.2;
                        Chris Leong)
@@ -49,7 +54,7 @@ import (
 )
 
 type phoneticData struct {
-	word            string
+	word            []rune
 	cur             int
 	isSlavoGermanic bool
 	metaphone1      string
@@ -57,11 +62,11 @@ type phoneticData struct {
 }
 
 func (p *phoneticData) endsWith(matches ...string) bool {
-	end := strings.Index(p.word[p.cur:], " ")
+	end := strings.Index(string(p.word[p.cur:]), " ")
 	if end != -1 {
 		for _, str := range matches {
 
-			if strings.Contains(p.word[p.cur:p.cur+end+1], str+" ") {
+			if strings.Contains(string(p.word[p.cur:p.cur+end+1]), str+" ") {
 				return true
 			}
 		}
@@ -70,11 +75,11 @@ func (p *phoneticData) endsWith(matches ...string) bool {
 }
 
 func (p *phoneticData) beginsWith(matches ...string) bool {
-	start := strings.LastIndex(p.word[:p.cur], " ")
+	start := strings.LastIndex(string(p.word[:p.cur]), " ")
 	if start != -1 {
 		for _, str := range matches {
 
-			if strings.Contains(p.word[start:p.cur], " "+str) {
+			if strings.Contains(string(p.word[start:p.cur]), " "+str) {
 				return true
 			}
 		}
@@ -85,7 +90,7 @@ func (p *phoneticData) beginsWith(matches ...string) bool {
 func (p *phoneticData) containsAny(matches ...string) bool {
 	for _, str := range matches {
 
-		if strings.Contains(p.word, str) {
+		if strings.Contains(string(p.word), str) {
 			return true
 		}
 	}
@@ -106,7 +111,7 @@ func (p *phoneticData) matchesAny(pos int, matches ...string) bool {
 		size := len(matches[i])
 		// bounds check
 		if p.cur+pos+size <= len(p.word) {
-			if p.word[p.cur+pos:p.cur+size+pos] == str {
+			if string(p.word[p.cur+pos:p.cur+size+pos]) == str {
 				return true
 			}
 		}
@@ -610,16 +615,13 @@ func Metaphone(s string) (string, string) {
 
 	// pad string
 	// normalize
-	p.word = " " + s + " "
-	p.word = strings.ToLower(p.word)
+	p.word = []rune(" " + strings.ToLower(s) + " ")
 
-	if strings.ContainsAny(p.word, "wk") || strings.Contains(p.word, "cz") || strings.Contains(p.word, "witz") {
+	if p.containsAny("w", "k", "cz", "witz") {
 		p.isSlavoGermanic = true
 	}
 
 	for i, next := range p.word {
-		// want to use range loop to handle unicode characters
-		// but also need to skip some characters
 		if p.cur == i {
 			//	fmt.Println(p.cur, ": ", string(next))
 			switch next {
