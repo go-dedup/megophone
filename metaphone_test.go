@@ -18,6 +18,7 @@ func Test(t *testing.T) {
 	printMetaphonePair("cabrillo")
 	printMetaphonePair("Caesar")
 	printMetaphonePair("Cagney")
+	printMetaphonePair("Carlysle")
 	printMetaphonePair("Chianti")
 	printMetaphonePair("Christopher")
 	printMetaphonePair("Czerny")

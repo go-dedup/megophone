@@ -149,42 +149,44 @@ func (p *phoneticData) b() {
 
 func (p *phoneticData) ç() {
 	p.add("s")
-	p.skip(1) // because this character is two bytes
 }
 
 func (p *phoneticData) c() {
-	if !p.matchesAny(-1, " ") && !p.matchesAny(-2, " ") && !p.isVowel(-2) &&
+	switch {
+	case !p.matchesAny(-1, " ") && !p.matchesAny(-2, " ") && !p.isVowel(-2) &&
 		p.matchesAny(-1, "ach") && !p.matchesAny(2, "i") &&
-		(!p.matchesAny(2, "e") || p.matchesAny(-2, "acher")) {
+		(!p.matchesAny(2, "e") || p.matchesAny(-2, "acher")):
 		// various germanic
 		p.add("k")
 		p.skip(1)
-	} else if p.matchesAny(-1, " caesar") {
+	case p.matchesAny(-1, " caesar"):
 		// special case: "caesar"
 		p.add("s")
 		p.skip(1)
-	} else if p.matchesAny(0, "chia") {
+	case p.matchesAny(0, "chia"):
 		// italian "chianti"
 		p.add("k")
 		p.skip(1)
-	} else if p.matchesAny(0, "ch") {
+	case p.matchesAny(0, "ch"):
 		// ch
-		if !p.matchesAny(-1, " ") && p.matchesAny(0, "chae") {
+		switch {
+
+		case !p.matchesAny(-1, " ") && p.matchesAny(0, "chae"):
 			// find "michael"
 			p.add("k")
-		} else if !p.matchesAny(0, "chore") &&
-			p.matchesAny(-1, " charac", " charis", " chor", " chym", " chia", " chem", " chla") {
+		case !p.matchesAny(0, "chore") &&
+			p.matchesAny(-1, " charac", " charis", " chor", " chym", " chia", " chem", " chla"):
 			// greek roots
 			p.add("k")
-		} else if p.containsAny(" van ", " von ", " sch") || p.matchesAny(-3, "psych") ||
+		case p.containsAny(" van ", " von ", " sch") || p.matchesAny(-3, "psych") ||
 			p.matchesAny(-2, "orches", "archit", "orchid") || p.matchesAny(2, "t", "s") ||
 			(p.matchesAny(-1, "a", "e", "o", "u", " ") &&
-				p.matchesAny(2, "l", "r", "n", "m", "b", "h", "f", "v", "w", " ")) {
+				p.matchesAny(2, "l", "r", "n", "m", "b", "h", "f", "v", "w", " ")):
 			// germanic greek or otherwise "ch" for "kh" sound
 			// "architect" but not "arch", "orchestra" or "orchid"
 			// e.g., "watchler", "wechsler", but not "tichner"
 			p.add("k")
-		} else if !p.matchesAny(-1, " ") {
+		case !p.matchesAny(-1, " "):
 			if p.matchesAny(-p.cur, " mc") {
 				// e.g. "McHugh"
 				if p.isVowel(2) {
@@ -195,19 +197,19 @@ func (p *phoneticData) c() {
 			} else {
 				p.add("x", "k")
 			}
-		} else {
+		default:
 			p.add("x")
 		}
 		p.skip(1)
-	} else if p.matchesAny(0, "cz") && !p.matchesAny(-2, "wicz") {
+	case p.matchesAny(0, "cz") && !p.matchesAny(-2, "wicz"):
 		// e.g. "czerny"
 		p.add("s", "x")
 		p.skip(1)
-	} else if p.matchesAny(1, "cia") {
+	case p.matchesAny(1, "cia"):
 		// e.g. "focaccia"
 		p.add("x")
 		p.skip(2)
-	} else if p.matchesAny(0, "cc") && !p.matchesAny(-p.cur, " m") {
+	case p.matchesAny(0, "cc") && !p.matchesAny(-p.cur, " m"):
 		// double "c", but not if e.g. "McClellan"
 		if p.matchesAny(2, "i", "e", "h") && !p.matchesAny(2, "hu") {
 			// "bellocchio" but not "bacchus"
@@ -223,10 +225,10 @@ func (p *phoneticData) c() {
 			p.add("k")
 			p.skip(1)
 		}
-	} else if p.matchesAny(0, "ck", "cg", "cq") {
+	case p.matchesAny(0, "ck", "cg", "cq"):
 		p.add("k")
 		p.skip(1)
-	} else if p.matchesAny(0, "ci", "ce", "cy") {
+	case p.matchesAny(0, "ci", "ce", "cy"):
 		if p.matchesAny(0, "cio", "cie", "cia") {
 			// italian vs. english
 			p.add("s", "x")
@@ -234,7 +236,7 @@ func (p *phoneticData) c() {
 			p.add("s")
 		}
 		p.skip(1)
-	} else {
+	default:
 		p.add("k")
 		// "mac caffrey", "mac gregor"
 		if p.matchesAny(1, " c", " g", " q") {
@@ -246,7 +248,8 @@ func (p *phoneticData) c() {
 }
 
 func (p *phoneticData) d() {
-	if p.matchesAny(0, "dg") {
+	switch {
+	case p.matchesAny(0, "dg"):
 		if p.matchesAny(2, "i", "e", "y") {
 			p.add("j")
 			p.skip(2)
@@ -254,10 +257,10 @@ func (p *phoneticData) d() {
 			p.add("tk")
 			p.skip(1)
 		}
-	} else if p.matchesAny(0, "dd", "dt") {
+	case p.matchesAny(0, "dd", "dt"):
 		p.add("t")
 		p.skip(1)
-	} else {
+	default:
 		p.add("t")
 	}
 }
@@ -272,24 +275,26 @@ func (p *phoneticData) f() {
 }
 
 func (p *phoneticData) g() {
-	if p.matchesAny(1, "h") {
-		if !p.matchesAny(-1, " ") && !p.isVowel(-1) {
+	switch {
+	case p.matchesAny(1, "h"):
+		switch {
+		case !p.matchesAny(-1, " ") && !p.isVowel(-1):
 			p.add("k")
 			p.skip(1)
-		} else if p.matchesAny(-1, " ") {
+		case p.matchesAny(-1, " "):
 			if p.matchesAny(2, "i") {
 				p.add("j")
 			} else {
 				p.add("k")
 			}
 			p.skip(1)
-		} else if p.matchesAny(-2, "b", "h", "d") ||
+		case p.matchesAny(-2, "b", "h", "d") ||
 			p.matchesAny(-3, "b", "h", "d") ||
-			p.matchesAny(-4, "b", "h", "d") {
+			p.matchesAny(-4, "b", "h", "d"):
 			// Parker's rule (with further refinements)
 			// e.g., "hugh", "bough", "broughton", "drought"
 			p.skip(1)
-		} else {
+		default:
 			// e.g., "laugh", "McLaughlin"
 			if p.matchesAny(-1, "u") && p.matchesAny(-3, "c", "g", "l", "r", "t") {
 				p.add("f")
@@ -298,7 +303,7 @@ func (p *phoneticData) g() {
 			}
 			p.skip(1)
 		}
-	} else if p.matchesAny(1, "n") {
+	case p.matchesAny(1, "n"):
 		if p.matchesAny(-2, " ") && p.isVowel(-1) && !p.isSlavoGermanic {
 			p.add("kn", "n")
 		} else if p.matchesAny(-1, " ") {
@@ -312,21 +317,21 @@ func (p *phoneticData) g() {
 			}
 		}
 		p.skip(1)
-	} else if p.matchesAny(1, "li") && !p.isSlavoGermanic {
+	case p.matchesAny(1, "li") && !p.isSlavoGermanic:
 		// tagliaro
 		p.add("kl", "l")
 		p.skip(1)
-	} else if p.matchesAny(1, " gy") ||
-		p.matchesAny(1, "es", "ep", "eb", "el", "ey", "ib", "il", "in", "ie", "ei", "er") {
+	case p.matchesAny(1, " gy") ||
+		p.matchesAny(1, "es", "ep", "eb", "el", "ey", "ib", "il", "in", "ie", "ei", "er"):
 		p.add("k", "j")
 		p.skip(1)
-	} else if p.matchesAny(1, "er", "y") &&
+	case p.matchesAny(1, "er", "y") &&
 		// -ger- -gy-
 		!p.matchesAny(-3, "danger", "ranger", "manger") &&
-		!p.matchesAny(-1, "e", "i", "rgy", "ogy") {
+		!p.matchesAny(-1, "e", "i", "rgy", "ogy"):
 		p.add("k", "j")
 		p.skip(1)
-	} else if p.matchesAny(1, "e", "i", "y") || p.matchesAny(-1, "aggi", "oggi") {
+	case p.matchesAny(1, "e", "i", "y") || p.matchesAny(-1, "aggi", "oggi"):
 		// italian e.g. "biaggi"
 		if p.containsAny(" van ", " von ", " sch") || p.matchesAny(1, "et") {
 			// obvious germanic
@@ -338,7 +343,7 @@ func (p *phoneticData) g() {
 			p.add("j", "k")
 		}
 		p.skip(1)
-	} else {
+	default:
 		p.add("k")
 		if p.matchesAny(1, "g") {
 			p.skip(1)
@@ -356,22 +361,23 @@ func (p *phoneticData) h() {
 }
 
 func (p *phoneticData) j() {
-	if p.matchesAny(0, "jose") || p.containsAny(" san ") {
+	switch {
+	case p.matchesAny(0, "jose") || p.containsAny(" san "):
 		// obvious spanish e.g. "jose" "san jacinto"
 		if (p.matchesAny(-1, " ") && p.matchesAny(4, " ")) || p.containsAny(" san ") {
 			p.add("h")
 		} else {
 			p.add("j", "h")
 		}
-	} else if p.matchesAny(-1, " ") {
+	case p.matchesAny(-1, " "):
 		p.add("j", "a")
-	} else if p.isVowel(-1) && !p.isSlavoGermanic && p.matchesAny(1, "a", "o") {
+	case p.isVowel(-1) && !p.isSlavoGermanic && p.matchesAny(1, "a", "o"):
 		p.add("j", "h")
-	} else if p.matchesAny(1, " ") {
+	case p.matchesAny(1, " "):
 		// end of the word because of padding
 		p.add("j", "")
-	} else if !p.matchesAny(1, "l", "t", "k", "s", "n", "m", "b", "z") &&
-		!p.matchesAny(-1, "s", "k", "l") {
+	case !p.matchesAny(1, "l", "t", "k", "s", "n", "m", "b", "z") &&
+		!p.matchesAny(-1, "s", "k", "l"):
 		p.add("j")
 	}
 
@@ -406,12 +412,13 @@ func (p *phoneticData) l() {
 }
 
 func (p *phoneticData) m() {
-	if p.matchesAny(-1, "umb") && (p.matchesAny(2, " ") || p.matchesAny(2, "er")) {
+	switch {
+	case p.matchesAny(-1, "umb") && (p.matchesAny(2, " ") || p.matchesAny(2, "er")):
 		p.add("m", "mp")
 		p.skip(1)
-	} else if p.matchesAny(0, "mn ") { //*
+	case p.matchesAny(0, "mn "): //*
 		p.skip(1)
-	} else if !p.matchesAny(-1, " mn") { //*
+	case !p.matchesAny(-1, " mn"): //*
 		p.add("m")
 		if p.matchesAny(1, "m") {
 			p.skip(1)
@@ -428,11 +435,11 @@ func (p *phoneticData) n() {
 
 func (p *phoneticData) ñ() {
 	p.add("n")
-	p.skip(1) // because this char is two bytes
 }
 
 func (p *phoneticData) p() {
-	if p.matchesAny(0, "ph") {
+	switch {
+	case p.matchesAny(0, "ph"):
 		if p.matchesAny(-p.cur, " uph", " sheph", " haph") {
 			// "shepherd" "uphill" "haphazard"
 			p.add("p")
@@ -440,10 +447,10 @@ func (p *phoneticData) p() {
 			p.add("f")
 			p.skip(1)
 		}
-	} else if p.matchesAny(1, "b", "p") {
+	case p.matchesAny(1, "b", "p"):
 		p.add("p")
 		p.skip(1)
-	} else if !p.matchesAny(-1, " pn", " ps") {
+	case !p.matchesAny(-1, " pn", " ps"):
 		p.add("p")
 	}
 }
@@ -469,33 +476,35 @@ func (p *phoneticData) r() {
 }
 
 func (p *phoneticData) s() {
-	if p.matchesAny(-1, "isl", "ysl") {
+	switch {
+	case p.matchesAny(-1, "isl", "ysl"):
 		// special cases: "island" "carlysle"
 		// skip it
-	} else if p.matchesAny(-1, " sugar") {
+	case p.matchesAny(-1, " sugar"):
 		p.add("x", "s")
-	} else if p.matchesAny(0, "sh") {
+	case p.matchesAny(0, "sh"):
 		if p.matchesAny(1, "holm", "holz", "heim", "hoek") {
 			p.add("s")
 		} else {
 			p.add("x")
 		}
 		p.skip(1)
-	} else if p.matchesAny(0, "sio", "sia") {
+	case p.matchesAny(0, "sio", "sia"):
 		if !p.isSlavoGermanic {
 			p.add("s", "x")
 		} else {
 			p.add("s")
 		}
 		p.skip(2)
-	} else if p.matchesAny(-1, " sm", " sn", " sl", " sw") || p.matchesAny(1, "z") {
+	case p.matchesAny(-1, " sm", " sn", " sl", " sw") || p.matchesAny(1, "z"):
 		p.add("s", "x")
 		if p.matchesAny(1, "z") {
 			p.skip(1)
 		}
-	} else if p.matchesAny(0, "sc") {
+	case p.matchesAny(0, "sc"):
 		// Schlesinger's rule
-		if p.matchesAny(2, "h") {
+		switch {
+		case p.matchesAny(2, "h"):
 			if p.matchesAny(3, "oo", "er", "en", "uy", "ed", "em") {
 				// dutch origin
 				if p.matchesAny(3, "er", "en") {
@@ -510,16 +519,16 @@ func (p *phoneticData) s() {
 				p.add("x")
 			}
 			p.skip(2)
-		} else if p.matchesAny(2, "i", "e", "y") {
+		case p.matchesAny(2, "i", "e", "y"):
 			p.add("s")
 			p.skip(2)
-		} else {
+		default:
 			p.add("sk")
 			p.skip(1) // *
 		}
-	} else if p.matchesAny(-2, "ais ", "ois ", "uis ") { // *
+	case p.matchesAny(-2, "ais ", "ois ", "uis "): // *
 		p.add("", "s")
-	} else {
+	default:
 		p.add("s")
 		if p.matchesAny(1, "s", "z") {
 			p.skip(1)
@@ -528,20 +537,21 @@ func (p *phoneticData) s() {
 }
 
 func (p *phoneticData) t() {
-	if p.matchesAny(0, "tion") {
+	switch {
+	case p.matchesAny(0, "tion"):
 		p.add("x")
 		p.skip(2)
-	} else if p.matchesAny(0, "tia", "tch") {
+	case p.matchesAny(0, "tia", "tch"):
 		p.add("x")
 		p.skip(2)
-	} else if p.matchesAny(0, "th", "tth") {
+	case p.matchesAny(0, "th", "tth"):
 		if p.matchesAny(2, "om", "am") || p.containsAny(" van ", " von ", " sch") {
 			p.add("t")
 		} else {
 			p.add("0", "t")
 		}
 		p.skip(1)
-	} else {
+	default:
 		p.add("t")
 		if p.matchesAny(1, "t", "d") {
 			p.skip(1)
@@ -561,19 +571,20 @@ func (p *phoneticData) v() {
 }
 
 func (p *phoneticData) w() {
-	if p.matchesAny(0, "wr") {
+	switch {
+	case p.matchesAny(0, "wr"):
 		p.add("r")
 		p.skip(1)
-	} else if p.matchesAny(-1, " ") && p.isVowel(1) || p.matchesAny(0, "wh") {
+	case p.matchesAny(-1, " ") && p.isVowel(1) || p.matchesAny(0, "wh"):
 		if p.isVowel(1) {
 			p.add("a", "f")
 		} else {
 			p.add("a")
 		}
-	} else if p.matchesAny(1, " ") && p.isVowel(-1) || p.matchesAny(-p.cur, " sch") ||
-		p.matchesAny(-1, "ewski", "owski", "ewsky", "owsky") {
+	case p.matchesAny(1, " ") && p.isVowel(-1) || p.matchesAny(-p.cur, " sch") ||
+		p.matchesAny(-1, "ewski", "owski", "ewsky", "owsky"):
 		p.add("", "f")
-	} else if p.matchesAny(0, "witz", "wicz") {
+	case p.matchesAny(0, "witz", "wicz"):
 		p.add("ts", "fx")
 		p.skip(3)
 	}
@@ -581,9 +592,10 @@ func (p *phoneticData) w() {
 }
 
 func (p *phoneticData) x() {
-	if p.matchesAny(-1, " ") {
+	switch {
+	case p.matchesAny(-1, " "):
 		p.add("s")
-	} else if !(p.matchesAny(-2, "aux ", "oux ")) { // *
+	case !(p.matchesAny(-2, "aux ", "oux ")): // *
 		p.add("ks")
 	}
 
@@ -593,12 +605,13 @@ func (p *phoneticData) x() {
 }
 
 func (p *phoneticData) z() {
-	if p.matchesAny(1, "h") {
+	switch {
+	case p.matchesAny(1, "h"):
 		p.add("j")
 		p.skip(1)
-	} else if p.matchesAny(1, "zo", "zi", "za") || (p.isSlavoGermanic && !p.matchesAny(-1, "t")) {
+	case p.matchesAny(1, "zo", "zi", "za") || (p.isSlavoGermanic && !p.matchesAny(-1, "t")):
 		p.add("s", "ts")
-	} else {
+	default:
 		p.add("s")
 	}
 
