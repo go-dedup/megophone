@@ -29,7 +29,8 @@ Atkinson (http {//aspell.net/metaphone/). It was translated to C by Maurice
 Aubrey <maurice@hevanet.com> for use in a Perl extension. A Python version was
 created by Andrew Collins on January 12, 2007, using the C source
 (http {//www.atomodo.com/code/double-metaphone/metaphone.py/view). It was also
-translated to Go by Adele Dewey-Lopez <adele@seed.co> using Atkinson's C++ source.
+translated to Go by Adele Dewey-Lopez <adele@seed.co> using Atkinson's C++ source,
+with some further revisions.
   Updated 2007-02-14 - Found a typo in the 'gh' section (0.1.1)
   Updated 2007-12-17 - Bugs fixed in 'S', 'Z', and 'J' sections (0.2;
                        Chris Leong)
@@ -39,6 +40,7 @@ translated to Go by Adele Dewey-Lopez <adele@seed.co> using Atkinson's C++ sourc
                        reformulated as objects, fixed a bug in 'G'
                        (0.4; Duncan McGreggor)
   Updated 2013-06    - Enforced unicode literals (0.5; Ian Beaver)
+  Updated 2015-05	 - // TODO: Write out all the changes I've made
 */
 
 import (
