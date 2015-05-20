@@ -3,7 +3,6 @@ package megophone
 import "testing"
 
 func Test(t *testing.T) {
-
 	printMetaphonePair("Abdurrahman")
 	printMetaphonePair("accident")
 	printMetaphonePair("Adele Thalia Dewey-Lopez")
@@ -42,6 +41,7 @@ func Test(t *testing.T) {
 	printMetaphonePair("Jankelowicz")
 	printMetaphonePair("John")
 	printMetaphonePair("Knight")
+	printMetaphonePair("Lebowitz")
 	printMetaphonePair("Lewinsky")
 	printMetaphonePair("Lincoln")
 	printMetaphonePair("Mac Gregor")

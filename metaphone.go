@@ -611,9 +611,8 @@ func Metaphone(s string) (string, string) {
 	p.word = " " + s + " "
 	p.word = strings.ToLower(p.word)
 
-	if p.matchesAny(0, "x") {
-		p.add("s")
-		p.skip(1)
+	if strings.ContainsAny(p.word, "wk") || strings.Contains(p.word, "cz") || strings.Contains(p.word, "witz") {
+		p.isSlavoGermanic = true
 	}
 
 	for i, next := range p.word {
