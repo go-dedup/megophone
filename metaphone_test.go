@@ -22,6 +22,7 @@ func Test(t *testing.T) {
 	printMetaphonePair("Chianti")
 	printMetaphonePair("Christopher")
 	printMetaphonePair("Czerny")
+	printMetaphonePair("Ççedallemas") // should give (sstlms, sstms)
 	printMetaphonePair("Danger")
 	printMetaphonePair("drought")
 	printMetaphonePair("Edgar")

@@ -62,11 +62,11 @@ type phoneticData struct {
 }
 
 func (p *phoneticData) beginsWith(matches ...string) bool {
-	start := strings.LastIndex(string(p.word[:p.cur]), " ")
+	start := strings.LastIndex(string(p.word)[:p.cur], " ")
 	if start != -1 {
 		for _, str := range matches {
 
-			if strings.Contains(string(p.word[start:p.cur]), " "+str) {
+			if strings.Contains(string(p.word)[start:p.cur], " "+str) {
 				return true
 			}
 		}
@@ -75,11 +75,11 @@ func (p *phoneticData) beginsWith(matches ...string) bool {
 }
 
 func (p *phoneticData) endsWith(matches ...string) bool {
-	end := strings.Index(string(p.word[p.cur:]), " ")
+	end := strings.Index(string(p.word)[p.cur:], " ")
 	if end != -1 {
 		for _, str := range matches {
 
-			if strings.Contains(string(p.word[p.cur:p.cur+end+1]), str+" ") {
+			if strings.Contains(string(p.word)[p.cur:p.cur+end+1], str+" ") {
 				return true
 			}
 		}
@@ -115,6 +115,7 @@ func (p *phoneticData) matchesAny(pos int, matches ...string) bool {
 			}
 		}
 	}
+
 	return false
 }
 
@@ -633,7 +634,7 @@ func Metaphone(s string) (string, string) {
 
 	for i, next := range p.word {
 		if p.cur == i {
-			//	fmt.Println(p.cur, ": ", string(next))
+			//fmt.Println(p.cur, ": ", string(next))
 			switch next {
 			case 'a', 'e', 'i', 'o', 'u', 'y':
 				if p.matchesAny(-1, " ") {
