@@ -187,7 +187,7 @@ func ExampleMetaphone() {
 
 func printMetaphonePair(s string) {
 	// just for testing
-	p1, p2 := megophone.Metaphone(s)
+	p1, p2 := megophone.DoubleMetaphone(s)
 	fmt.Printf("%s: (%s, %s)\n", s, p1, p2)
 }
 

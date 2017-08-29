@@ -616,7 +616,7 @@ func (p *phoneticData) z() {
 	}
 }
 
-func Metaphone(s string) (string, string) {
+func DoubleMetaphone(s string) (string, string) {
 	// initialize
 	var p *phoneticData
 	p = &phoneticData{}
