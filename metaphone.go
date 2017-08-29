@@ -48,10 +48,7 @@ with some further revisions.
   Updated 2015-05	 - // TODO: Write out all the changes I've made
 */
 
-import (
-	"fmt"
-	"strings"
-)
+import "strings"
 
 type phoneticData struct {
 	word            []rune
@@ -690,20 +687,4 @@ func Metaphone(s string) (string, string) {
 	}
 
 	return p.metaphone1, p.metaphone2
-}
-
-func printMetaphonePair(s string) {
-	// just for testing
-	p1, p2 := Metaphone(s)
-	// stupid hacks so they all line up nicely
-	p2 = "\tSecond: " + p2
-	s = "\tOriginal: " + s
-	if len(p2) < 16 {
-		s = "\t" + s
-	}
-	if len(p1) < 7 {
-		p2 = "\t" + p2
-	}
-
-	fmt.Println("First: ", p1, p2, s)
 }

@@ -1,8 +1,14 @@
-package megophone
+package megophone_test
 
-import "testing"
+import (
+	"fmt"
 
-func Test(t *testing.T) {
+	"github.com/go-dedup/megophone"
+)
+
+// for standalone test, change package to `main` and the next func def to,
+// func main() {
+func ExampleMetaphone() {
 	printMetaphonePair("Abdurrahman")
 	printMetaphonePair("accident")
 	printMetaphonePair("Adele Thalia Dewey-Lopez")
@@ -89,4 +95,102 @@ func Test(t *testing.T) {
 	printMetaphonePair("Yudkowsky")
 	printMetaphonePair("Yvone")
 	printMetaphonePair("Zuckerman")
+
+	// Output:
+	// Abdurrahman: (aptrmn, aptrmn)
+	// accident: (akstnt, akstnt)
+	// Adele Thalia Dewey-Lopez: (atl0ltlps, atltltlpts)
+	// Agnostic: (aknstk, anstk)
+	// Alexander: (alksntr, alksntr)
+	// Andrej: (antrj, antr)
+	// Auxiliary: (akslr, akslr)
+	// bacci: (px, px)
+	// Bach: (pk, pk)
+	// Bordeaux: (prt, prt)
+	// bough: (p, p)
+	// Broughton: (prtn, prtn)
+	// cabrillo: (kprl, kpr)
+	// Caesar: (ssr, ssr)
+	// Cagney: (kkn, kkn)
+	// Carlysle: (krll, krll)
+	// Chianti: (knt, knt)
+	// Christopher: (krstfr, krstfr)
+	// Czerny: (srn, xrn)
+	// Ççedallemas: (sstlms, sstms)
+	// Danger: (tnkr, tnjr)
+	// drought: (trt, trt)
+	// Edgar: (atkr, atkr)
+	// edge: (aj, aj)
+	// El Niño: (alnn, alnn)
+	// Eleni: (aln, aln)
+	// focaccia: (fkx, fkx)
+	// François: (frns, frnss)
+	// Gallegos: (klks, kks)
+	// Germany: (krmn, jrmn)
+	// Ghiradelli: (jrtl, jrtl)
+	// GIF: (jf, kf)
+	// Glover: (klfr, klfr)
+	// Gnome: (nm, nm)
+	// Gough: (kf, kf)
+	// Hochmeier: (hkmr, hkmr)
+	// Hugh: (h, h)
+	// Jankelowicz: (jnklts, anklfx)
+	// John: (jn, an)
+	// Knight: (nt, nt)
+	// Lebowitz: (lpts, lpfx)
+	// Lewinsky: (lnsk, lnsk)
+	// Lincoln: (lnkn, lnkn)
+	// Mac Gregor: (mkrkr, mkrkr)
+	// Malcolm: (mlkm, mlkm)
+	// Manickaraj: (mnkrj, mnkr)
+	// Matthew: (m0, mtf)
+	// McHugh: (mkh, mkh)
+	// McLaughlin: (mklfln, mklfln)
+	// Mehta: (mt, mt)
+	// Metaphone: (mtfn, mtfn)
+	// Michael: (mkl, mkl)
+	// Michelle: (mxl, mkl)
+	// Mnemonic: (nmnk, nmnk)
+	// Numb: (nm, nmp)
+	// Oxcart: (akskrt, akskrt)
+	// Phonetics: (fntks, fntks)
+	// Pizza: (ps, pts)
+	// Plumber: (plmr, plmpr)
+	// Poisson: (psn, psn)
+	// Psychology: (sklj, sklk)
+	// Qalmun: (klmn, klmn)
+	// Rogier: (rk, rjr)
+	// San Jose: (snhs, snhs)
+	// Schnieder: (xntr, sntr)
+	// science: (sns, sns)
+	// sclerosis: (sklrss, sklrss)
+	// Shepherd: (xprt, xprt)
+	// Smith: (sm0, xmt)
+	// Sophia: (sf, sf)
+	// Sugarman: (xkrmn, skrmn)
+	// Szilard: (slrt, xlrt)
+	// Tagliaro: (tklr, tlr)
+	// Thomas: (tms, tms)
+	// Umberto: (amrt, amprt)
+	// Victor: (fktr, pktr)
+	// Vigier: (fk, pjr)
+	// Wasserman: (asrmn, fsrmn)
+	// wheather: (a0r, atr)
+	// Womo: (am, fm)
+	// Wright: (rt, rt)
+	// Xavior: (sfr, sfr)
+	// Xcaret: (skrt, skrt)
+	// Yudkowsky: (atksk, atkfsk)
+	// Yvone: (afn, afn)
+	// Zuckerman: (skrmn, tskrmn)
+}
+
+func printMetaphonePair(s string) {
+	// just for testing
+	p1, p2 := megophone.Metaphone(s)
+	fmt.Printf("%s: (%s, %s)\n", s, p1, p2)
+}
+
+// to show the full code in GoDoc
+type dummy struct {
 }
