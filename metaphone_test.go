@@ -95,6 +95,11 @@ func ExampleMetaphone() {
 	printMetaphonePair("Yudkowsky")
 	printMetaphonePair("Yvone")
 	printMetaphonePair("Zuckerman")
+	printMetaphonePair("wheather Smith")
+	printMetaphonePair("128")
+	printMetaphonePair("mp3")
+	printMetaphonePair("mp4")
+	printMetaphonePair("256GB")
 
 	// Output:
 	// Abdurrahman: (aptrmn, aptrmn)
@@ -183,6 +188,11 @@ func ExampleMetaphone() {
 	// Yudkowsky: (atksk, atkfsk)
 	// Yvone: (afn, afn)
 	// Zuckerman: (skrmn, tskrmn)
+	// wheather Smith: (a0rsm0, atrxmt)
+	// 128: (, )
+	// mp3: (mp, mp)
+	// mp4: (mp, mp)
+	// 256GB: (kp, kp)
 }
 
 func printMetaphonePair(s string) {
